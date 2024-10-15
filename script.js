@@ -1,5 +1,5 @@
 let singapore = [ 1.29,103.85]; // #1 Singapore latlng
-let map = L.map('map').setView(singapore, 13); // #2 Set the center point
+let map = L.map('map').setView(singapore, 12); // #2 Set the center point
 
 // setup the tile layers
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
