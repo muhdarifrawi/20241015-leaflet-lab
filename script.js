@@ -1,4 +1,4 @@
-let environment = 3;
+let environment = 4;
 // 1: randomLatLong, 2: taxi, 3: earthquake
 
 // the map argument refers to the map which we create using Leaflet
@@ -52,6 +52,57 @@ quakeMap = async () => {
     markerClusterLayer.addTo(map);
 }
 
+layerDemo = () => {
+    document.querySelector('#toggle-btn').addEventListener('click', function(){
+        // use hasLayer() to check if the map already have the shopping layer group
+        // reminder: group2 contains all the circles
+                if (map.hasLayer(group2)) {
+                    map.removeLayer(group2);
+                } else {
+                    map.addLayer(group2);
+                }
+        }
+    )
+    let group= L.layerGroup(); // 1. create the layer group
+    L.marker(getRandomLatLng(map)).addTo(group);  // 2. add markers to the group
+    L.marker(getRandomLatLng(map)).addTo(group);
+    L.marker(getRandomLatLng(map)).addTo(group);
+
+    // add the group layer to the map
+    group.addTo(map); // 3. add the layer to the map
+
+    let group2 = L.layerGroup();
+    for (let i = 0; i < 5; i++) {
+        L.circle(getRandomLatLng(map), {
+        color: 'red',
+        fillColor:"orange",
+        fillOpacity:0.5,
+        radius: 500
+    }).addTo(group2);
+    }
+
+    let group3 = L.layerGroup();
+    for (let i = 0; i < 5; i++) {
+        L.circle(getRandomLatLng(map), {
+        color: 'red',
+        fillColor:"green",
+        fillOpacity:0.5,
+        radius: 250
+    }).addTo(group3);
+    }
+
+    let baseLayers ={
+        'Markers': group,
+        'Circles': group2
+    }
+    
+    let overlays = {
+        'Green Circle':group3
+    }
+
+    L.control.layers(baseLayers, overlays).addTo(map);
+}
+
 let singapore = [ 1.29,103.85]; // Singapore latlng
 let map;
 switch(environment){
@@ -67,7 +118,10 @@ switch(environment){
         setMap(0,0, 0, 1, 1);
         quakeMap();
         break;
-
+    case 4:
+        setMap(1.29, 103.85, 13, 0, 18);
+        layerDemo();
+        break;
 }
 
 function setMap(lat, long, zoom, minZoom, maxZoom){
