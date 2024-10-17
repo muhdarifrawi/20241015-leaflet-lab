@@ -1,43 +1,40 @@
-let singapore = [ 1.29,103.85]; // #1 Singapore latlng
-let map = L.map('map').setView(singapore, 12); // #2 Set the center point
+// the map argument refers to the map which we create using Leaflet
+function getRandomLatLng(map) {
+    // get the boundaries of the map
+    let bounds = map.getBounds();
+    let southWest = bounds.getSouthWest();
+    let northEast = bounds.getNorthEast();
+    let lngSpan = northEast.lng - southWest.lng;
+    let latSpan = northEast.lat - southWest.lat;
+
+    let randomLng = Math.random() * lngSpan + southWest.lng;
+    let randomLat = Math.random() * latSpan + southWest.lat;
+
+    return [ randomLat, randomLng,];
+}
+
+
+let singapore = [ 1.29,103.85]; // Singapore latlng
+let map = L.map('map').setView(singapore, 13);
 
 // setup the tile layers
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', 
-    { 
-        maxZoom: 19, 
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>' 
-    }).addTo(map);
+// NOTE: This tile layer code was lifted from Lab 6 as I was having problems with
+// the tile layer code in Lab 3.
+L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery (c) <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoiZXh0cmFrdW4iLCJhIjoiY2swdnZtMWVvMTAxaDNtcDVmOHp2c2lxbSJ9.4WxdONppGpMXeHO6rq5xvg'
+}).addTo(map);
 
+// create marker cluster
+let markerClusterLayer = L.markerClusterGroup();
 
-let singaporeMarker = L.marker([1.29, 103.85]);
+for (let i = 0; i < 1000; i++) {
+    let pos = getRandomLatLng(map);
+    L.marker(pos).addTo(markerClusterLayer);
+}
 
-singaporeMarker.addTo(map);
-
-singaporeMarker.bindPopup("<p>Singapore</p>");
-
-singaporeMarker.addEventListener('click', function(){
-    alert("Singapore");
-});
-
-let circle = L.circle([1.35166526, 103.773663572], {
-    color: 'red',
-    fillColor:"orange",
-    fillOpacity:0.5,
-    radius: 500
-})
-
-// add it to the map
-circle.addTo(map);
-
-let singaporeZoo = L.marker([1.4044986571793008, 103.79305517871434]);
-let singaporeDiscoveryCenter = L.marker([1.332851287671395, 103.67893246337191]);
-let singaporeBirdPark = L.marker([1.3189210185617706, 103.70645242104315]);
-
-singaporeZoo.addTo(map);
-singaporeDiscoveryCenter.addTo(map);
-singaporeBirdPark.addTo(map);
-
-singaporeZoo.bindPopup("<p>Singapore Zoo</p>");
-singaporeDiscoveryCenter.bindPopup("<p>Singapore Discovery Center</p>");
-singaporeBirdPark.bindPopup("<p>Jurong Bird Park</p>");
-
+markerClusterLayer.addTo(map);
