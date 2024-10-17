@@ -30,11 +30,30 @@ L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_toke
 }).addTo(map);
 
 // create marker cluster
-let markerClusterLayer = L.markerClusterGroup();
+// let markerClusterLayer = L.markerClusterGroup();
 
-for (let i = 0; i < 1000; i++) {
-    let pos = getRandomLatLng(map);
-    L.marker(pos).addTo(markerClusterLayer);
-}
+// for (let i = 0; i < 1000; i++) {
+//     let pos = getRandomLatLng(map);
+//     L.marker(pos).addTo(markerClusterLayer);
+// }
 
-markerClusterLayer.addTo(map);
+// markerClusterLayer.addTo(map);
+
+// getLocation();
+
+
+
+(async () => {
+    let markerClusterLayer = L.markerClusterGroup();
+    let taxiLocations = await getLocation();
+    console.log("taxi locations >>> ", taxiLocations)
+    taxiLocations.map((pos)=>{
+        let latLong = [pos[1], pos[0]]
+        console.log(latLong)
+        L.marker(latLong).addTo(markerClusterLayer);
+    })
+
+    console.log(markerClusterLayer);
+
+    markerClusterLayer.addTo(map);
+})();
